@@ -2,6 +2,7 @@ const express = require('express')
 const cors = require('cors')
 const app = express()
 const db = require("./db")
+const standalone = require("./standalone")
 
 
 const port = process.env.PORT || 8000
@@ -14,17 +15,20 @@ app.get('/', (req, res) => {
 
 app.get('/:project/get', (req, res) => {
   const { project } = req.params;
-  let sql = `SELECT version FROM versions WHERE project=?`
-  let params = [project]
-  db.get(sql, params, function (err, row) {
-    if (err) {
-      res.status(400).json({"error":err.message});
-      return;
-    }
-    if (row) res.end(String(row.version))
-    else res.end("Project not found")
+  standalone.getProjectVersion(project, (data) => {
+    res.send(data)
+  }, (err) => {
+    res.send(err)
   })
 })
+
+// app.get('/:identifier', async (req, res) => {
+	
+// });
+
+// app.get('/:identifier/set/:numberstr', async (req, res) => {
+	
+// });
 
 app.listen(port, () => {
   console.log(`Service listening at http://localhost:${port}`)
