@@ -1,0 +1,19 @@
+version: "3.3"
+
+
+services:
+
+  buildpp:
+    image: buildpp:latest
+    container_name: buildpp
+    restart: on-failure
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - PORT=8000
+    volumes:
+      - ./db.sqlite:/home/buildpp/db.sqlite:rw
+    ports:
+      - 8000:8000
+

@@ -1,0 +1,6 @@
+tests
+examples
+db.sqlite
+node_modules
+.gitignore
+.npmignore
