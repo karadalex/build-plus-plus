@@ -22,9 +22,15 @@ app.get('/:project/get', (req, res) => {
   })
 })
 
-// app.get('/:identifier', async (req, res) => {
-	
-// });
+app.get('/:project', (req, res) => {
+  const { project } = req.params;
+  standalone.updateProjectVersion(project);
+  standalone.getProjectVersion(project, (data) => {
+    res.send(data)
+  }, (err) => {
+    res.send(err)
+  })
+})
 
 // app.get('/:identifier/set/:numberstr', async (req, res) => {
 	
