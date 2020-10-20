@@ -3,6 +3,11 @@
   "version": "0.0.1",
   "description": "A service for incrementing build numbers based on https://increment.build/",
   "main": "index.js",
+  "bin": {
+    "buildpp": "server.js",
+    "buildplusplus": "server.js",
+    "build-plus-plus": "server.js"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

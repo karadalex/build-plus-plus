@@ -1,41 +1,71 @@
-const express = require('express')
-const cors = require('cors')
-const app = express()
 const db = require("./db")
-const standalone = require("./standalone")
 
+const noop = (data) => {}
+const notFound = "Project not found"
 
-const port = process.env.PORT || 8000
-
-app.use(cors())
-
-app.get('/', (req, res) => {
-  res.send('Small service for incrementing build versions')
-})
-
-app.get('/:project/get', (req, res) => {
-  const { project } = req.params;
-  standalone.getProjectVersion(project, (data) => {
-    res.send(data)
-  }, (err) => {
-    res.send(err)
+/**
+ * Get Project version number. If no such project exists, create one
+ * @param {String} project 
+ * @param {Function} success_callback 
+ * @param {Function} error_callback 
+ */
+function getOrCreateProjectVersion(project, success_callback=noop, error_callback=noop) {
+  let sql = `SELECT version FROM versions WHERE project=?`
+  let params = [project]
+  db.get(sql, params, function (err, row) {
+    if (err) { 
+      error_callback(err.message)
+      return err.message
+    }
+    if (row) {
+      success_callback(String(row.version))
+      return row.version
+    } else {
+      let insertSql = `INSERT INTO versions (project, version, created_at, updated_at) 
+        VALUES (?, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)`
+      db.run(insertSql, params, function (err, row) {
+        if (err) {
+          error_callback(err.message)
+          return err.message
+        }
+        db.get(sql, params, function (err, row) {
+          if (err) { 
+            error_callback(err.message)
+            return err.message
+          }
+          success_callback(String(row.version))
+          return row.version
+        })
+      })
+    }
   })
-})
+}
 
-app.get('/:project', (req, res) => {
-  const { project } = req.params;
-  standalone.updateProjectVersion(project);
-  standalone.getProjectVersion(project, (data) => {
-    res.send(data)
-  }, (err) => {
-    res.send(err)
+/**
+ * Increment project version number
+ * @param {String} project 
+ * @param {Function} success_callback 
+ * @param {Function} error_callback 
+ */
+function updateProjectVersion(project, success_callback=noop, error_callback=noop) {
+  let sql = `UPDATE versions
+    SET version = version + 1, updated_at = CURRENT_TIMESTAMP
+    WHERE project = ?`
+  let params = [project]
+  db.get(sql, params, function (err, row) {
+    if (err) {
+      error_callback(err.message)
+      return err.message
+    }
+    if (row) {
+      success_callback(String(row.version))
+      return row.version
+    }
+    else {
+      error_callback(notFound)
+      return notFound
+    }
   })
-})
+}
 
-// app.get('/:identifier/set/:numberstr', async (req, res) => {
-	
-// });
-
-app.listen(port, () => {
-  console.log(`Service listening at http://localhost:${port}`)
-})
+module.exports = { getOrCreateProjectVersion, updateProjectVersion }
