@@ -1,0 +1,29 @@
+{
+  "name": "build-plus-plus",
+  "version": "0.0.1",
+  "description": "A service for incrementing build numbers based on https://increment.build/",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/karadalex/build-plus-plus.git"
+  },
+  "keywords": [
+    "cicd",
+    "build",
+    "number",
+    "versioning"
+  ],
+  "author": "Alexios Karadimos",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/karadalex/build-plus-plus/issues"
+  },
+  "homepage": "https://github.com/karadalex/build-plus-plus#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.17.1"
+  }
+}
