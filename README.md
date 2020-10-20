@@ -1,6 +1,8 @@
 build-plus-plus
 ===============
 
+[![Build Status](https://travis-ci.org/karadalex/build-plus-plus.svg?branch=main)](https://travis-ci.org/karadalex/build-plus-plus)
+
 A service for incrementing build numbers for automated CI/CD pipelines. 
 
 ## Table of Contents
